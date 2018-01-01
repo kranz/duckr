@@ -1,17 +1,39 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import routes from './config/routes'
-import { createStore } from 'redux'
+import getRoutes from './config/routes'
+import thunk from 'redux-thunk'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import users from 'redux/modules/users'
+import { checkIfAuthed } from 'helpers/auth'
+import * as reducers from 'redux/modules'
 
-const store = createStore(users)
-console.log(store)
-console.log(store.getState())
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(combineReducers(reducers), /* preloadedState, */ composeEnhancers(
+    applyMiddleware(thunk),
+))
+
+function checkAuth(nextState, replace) {
+  if (store.getState().users.isFetching === true) {
+    return
+  }
+
+  const isAuthed = checkIfAuthed(store)
+  const nextPathName = nextState.location.pathname
+  if(nextPathName === '/' || nextPathName === '/auth') {
+    if (isAuthed === true) {
+      replace('/feed')
+    }
+  } else {
+    if (isAuthed !== true) {
+      replace('/auth')
+    }
+  }
+}
+
 
 ReactDOM.render(
   <Provider store={store}>
-    {routes}
+    {getRoutes(checkAuth)}
   </Provider>,
   document.getElementById('app')
 )

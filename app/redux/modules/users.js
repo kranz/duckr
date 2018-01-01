@@ -1,9 +1,12 @@
+import auth, { logout, saveUser } from 'helpers/auth'
+import { formatUserInfo } from 'helpers/utils'
+
 const AUTH_USER = 'AUTH_USER'
 const UNAUTH_USER = 'UNAUTH_USER'
 const FETCHING_USER = 'FETCHING_USER'
 const FETCHING_USER_FAILURE = 'FETCHING_USER_FAILURE'
 const FETCHING_USER_SUCCESS = 'FETCHING_USER_SUCCESS'
-
+const REMOVE_FETCHING_USER = 'REMOVE_FETCHING_USER'
 
 export function authUser (uid) {
   return {
@@ -18,13 +21,13 @@ function unauthUser () {
   }
 }
 
-export function fetchingUser() {
+function fetchingUser() {
   return {
    type: FETCHING_USER,
   }
 }
 
-export function fetchingUserFailure() {
+function fetchingUserFailure() {
   return {
     type: FETCHING_USER_FAILURE,
     error: 'Error fetching user.',
@@ -40,6 +43,32 @@ export function fetchingUserSuccess (uid, user, timestamp) {
   }
 }
 
+export function fetchAndHandleAuthedUser() {
+  return function(dispatch) {
+    dispatch(fetchingUser())
+    return auth().then(({user, credential}) => {
+      const userData = user.providerData[0]
+      const userInfo = formatUserInfo(userData.displayName, userData.photoURL, userData.uid)
+      return dispatch(fetchingUserSuccess(user.uid, userInfo, Date.now()))
+    })
+      .then(({user}) => saveUser(user))
+      .then((user) => dispatch(authUser(user.uid)))
+      .catch((error)=> dispatch(fetchingUserFailure(error)))
+
+  }
+}
+export function logoutAndUnauth () {
+  return function (dispatch) {
+    logout()
+    dispatch(unauthUser())
+  }
+}
+
+export function removeFetchingUser () {
+  return {
+    type: REMOVE_FETCHING_USER,
+  }
+}
 
 const initialUserState = {
   lastUpdated: 0,
@@ -64,7 +93,7 @@ function user (state = initialUserState, action) {
 }
 
 const initialState = {
-  isFetching: false,
+  isFetching: true,
   error: '',
   isAuthed: false,
   authedId: '',
@@ -108,6 +137,11 @@ export default function users (state = initialState, action) {
           error: '',
           [action.uid]: user(state[action.uid], action),
         }
+        case REMOVE_FETCHING_USER:
+          return {
+            ...state,
+            isFetching: false,
+          }
     default :
       return state
   }
