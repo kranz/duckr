@@ -18,13 +18,13 @@ const DuckContainer = createReactClass({
     addAndHandleLike: func.isRequired,
     handleDeleteLike: func.isRequired,
   },
-  contextType: {
+  contextTypes: {
     router: PropTypes.object.isRequired,
   },
   getDefaultProps () {
     return {
-      hideReplyBtn: true,
-      hideLikeCount: false,
+      hideReplyBtn: false,
+      hideLikeCount: true,
     }
   },
   goToProfile (e) {
@@ -33,7 +33,7 @@ const DuckContainer = createReactClass({
   },
   handleClick (e) {
     e.stopPropagation()
-    this.context.router.push('/duckDetail' + this.props.duck.duckId)
+    this.context.router.push('ducks/' + this.props.duck.duckId)
   },
   render () {
     return (

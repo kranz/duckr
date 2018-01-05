@@ -11,7 +11,7 @@ function saveToDucks (duck) {
 }
 
 function saveToUsersDucks (duck, duckId) {
-  return ref.child(`usersDuck/${duck.uid}/${duckId}`)
+  return ref.child(`usersDucks/${duck.uid}/${duckId}`)
     .set({...duck,duckId})
 }
 
@@ -60,4 +60,25 @@ export function incrementNumberOfLikes (duckId) {
 export function decrementNumberOfLikes (duckId) {
   return ref.child(`likeCount/${duckId}`)
     .transaction((currentValue = 0) => currentValue - 1)
+}
+
+export function fetchUser (uid) {
+  return ref.child(`users/${uid}`).once('value')
+    .then((snapshot) => snapshot.val() || {})
+}
+
+export function fetchUsersDucks (uid) {
+  console.log('uid=',uid)
+  return ref.child(`usersDucks/${uid}`).once('value')
+    .then((snapshot) => snapshot.val() || {})
+}
+
+export function fetchDuck (duckId) {
+  return ref.child(`ducks/${duckId}`).once('value')
+    .then((snapshot) => snapshot.val())
+}
+
+export function fetchLikeCount (duckId) {
+  return ref.child(`likeCount/${duckId}`).once('value')
+    .then((snapshot) => snapshot.val() || 0)
 }
