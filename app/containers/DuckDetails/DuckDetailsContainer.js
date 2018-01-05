@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { DuckDetails } from 'components'
 import * as duckActionCreators from 'redux/modules/ducks'
 import * as likeCountActionCreators from 'redux/modules/likeCount'
-
+import * as repliesActionCreators from 'redux/modules/replies'
 
 const DuckDetailsContainer = createReactClass({
   propTypes: {
@@ -17,6 +17,7 @@ const DuckDetailsContainer = createReactClass({
     fetchAndHandleDuck: PropTypes.func.isRequired,
     duckAlreadyFetched: PropTypes.bool.isRequired,
     initLikeFetch: PropTypes.func.isRequired,
+    addAndHandleReply: PropTypes.func.isRequired,
   },
   componentDidMount () {
     this.props.initLikeFetch(this.props.duckId)
@@ -29,11 +30,11 @@ const DuckDetailsContainer = createReactClass({
   render () {
     return (
       <DuckDetails
+        addAndHandleReply={this.props.addAndHandleReply}
         authedUser={this.props.authedUser}
         duckId={this.props.duckId}
         error={this.props.error}
-        isFetching={this.props.isFetching}
-      />
+        isFetching={this.props.isFetching} />
     )
   },
 })
@@ -51,7 +52,8 @@ function mapStateToProps ({ducks, likeCount, users}, props) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     ...duckActionCreators,
-    ...likeCountActionCreators
+    ...likeCountActionCreators,
+    ...repliesActionCreators,
   }, dispatch)
 }
 

@@ -14,7 +14,7 @@ function fetchingCount () {
 function fetchingCountError (error) {
   return {
     type: FETCHING_COUNT_ERROR,
-    error: 'Error fetching duck\'s like count',
+    error: error || 'Error fetching duck\'s like count',
   }
 }
 
@@ -26,7 +26,7 @@ function fetchingCountSuccess (duckId, count) {
   }
 }
 
-export function initLikeFetch(duckId) {
+export function initLikeFetch (duckId) {
   return function (dispatch) {
     dispatch(fetchingCount())
 
