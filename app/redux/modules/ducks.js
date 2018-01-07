@@ -16,7 +16,6 @@ function fetchingDuck () {
 }
 
 function fetchingDuckError (error) {
-  console.warn(error)
   return {
     type: FETCHING_DUCK_ERROR,
     error: 'Error fetching Duck',
