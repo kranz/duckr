@@ -16,40 +16,42 @@ function addReply (duckId,reply)  {
   }
   
 function  addReplyError (error) {
-    return {
-        type: ADD_REPLY_ERROR,
-        error: 'Error adding reply',
-    }
+  console.warn(error)
+  return {
+    type: ADD_REPLY_ERROR,
+    error: 'Error adding reply',
   }
+}
   
 function  removeReply (duckId, replyId) {
-    return {
-        type: REMOVE_REPLY,
-        replyId,
-    }
+  return {
+    type: REMOVE_REPLY,
+    replyId,
   }
+}
   
 function fetchingReplies () {
-    return {
-        type: FETCHING_REPLIES,
-    }
+  return {
+    type: FETCHING_REPLIES,
   }
+}
   
 function  fetchingRepliesError (error) {
-    return {
-        type: FETCHING_REPLIES_ERROR,
-        error: 'Error fetching replies',
-    }
+  console.warn(error)
+  return {
+    type: FETCHING_REPLIES_ERROR,
+    error: 'Error fetching replies',
   }
+}
   
 function  fetchingRepliesSuccess (replies, duckId) {
-    return {
-        type: FETCHING_REPLIES_SUCCESS,
-        replies,
-        duckId,
-        lastUpdated: Date.now(),
-    }
+  return {
+    type: FETCHING_REPLIES_SUCCESS,
+    replies,
+    duckId,
+    lastUpdated: Date.now(),
   }
+}
   
 export function addAndHandleReply (duckId, reply) {
   return function (dispatch) {
@@ -68,9 +70,16 @@ export function fetchAndHandleReplies (duckId) {
     dispatch(fetchingReplies())
 
     fetchReplies(duckId)
-      -then((replies) => dispatch(fetchingRepliesSuccess(duckId, replies, Date.now())))
+      .then((replies) => pippalo(dispatch,duckId,replies))
       .catch((error) => dispatch(fetchingRepliesError(error)))
   }
+}
+
+
+function pippalo (dispatch, duckId, replies) {
+  console.log('duckId=',duckId)
+  console.log('replies=',replies)
+  dispatch(fetchingRepliesSuccess(replies, duckId, Date.now()))
 }
 
 const initialReply = {

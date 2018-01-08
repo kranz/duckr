@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react'
 import createReactClass from 'create-react-class'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Replies } from 'components'
-import { bindActionCreators } from 'redux'
-import * as repliesActionCreators from 'redux/modules/replies'
 import { staleReplies } from 'helpers/utils'
+import * as repliesActionCreators from 'redux/modules/replies'
  
 const RepliesContainer = createReactClass({
   propTypes: {
@@ -51,6 +51,7 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
 	return bindActionCreators(repliesActionCreators, dispatch)
 }
+
 
 export default connect(
 	mapStateToProps,

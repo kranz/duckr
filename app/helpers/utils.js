@@ -1,7 +1,4 @@
-import { 
-  usersDucksExpirationLength, 
-  userExpirationLength,
-  repliesExpirationLength } from 'config/constants'
+import { usersDucksExpirationLength, userExpirationLength, repliesExpirationLength } from 'config/constants'
 
 export function formatUserInfo(name, avatar, uid) {
   return {

@@ -50,10 +50,7 @@ export default function DuckDetails ({duckId, isFetching, authedUser, error, add
         ? <p className={subHeader}>{'Fetching'}</p>
         : <div className={container}>
             <div className={content}>
-              <DuckContainer
-                duckId={duckId}
-                hideLikeCount={false}
-                hideReplyBtn={true} />
+              <DuckContainer duckId={duckId} hideLikeCount={false} hideReplyBtn={true} />
               <Reply submit={(replyText) => addAndHandleReply(duckId,formatReply(authedUser, replyText))} />
             </div>
             <div className={repliesContainer}>
